@@ -37,7 +37,7 @@ public:
                int avoid_u_turns, double max_angle, 
                int oriented_streamlines_,
                double singularity_mask_radius,
-               unsigned int random_seed, int parallel_);
+               unsigned int random_seed, int parallel_, int num_threads);
     // call after setup()
     void define_seed_region(int seed_region_size, int* seed_region);
     void run();

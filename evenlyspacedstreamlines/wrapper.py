@@ -17,7 +17,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
                               avoid_u_turns=True, max_angle=90,
                               singularity_mask_radius=0.1,
                               allow_tweaking_orientation=True,
-                              random_seed=0, parallel=True):
+                              random_seed=0, parallel=True, num_threads=-1):
     """Generate a set of evenly spaced streamlines on a triangulated surface
 
     Args:
@@ -65,6 +65,8 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
             generation (default: seed based on time)
         parallel (bool): if True (default), use multithreading wherever 
             implemented
+        num_threads (int): if possible, use that number of threads for parallel
+            computing (default: let OpenMP choose)
     
     Returns:
         streamlines (list of n-by-3 matrices): xyz coordinates of each
@@ -127,7 +129,8 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
         singularity_mask_radius=singularity_mask_radius,
         allow_tweaking_orientation=allow_tweaking_orientation,
         random_seed=random_seed, 
-        parallel=parallel
+        parallel=parallel,
+        num_threads=num_threads
     )
     return list_of_lines, list_of_indices, StreamlinesInfos(**infos)
 

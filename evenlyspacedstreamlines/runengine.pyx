@@ -13,7 +13,7 @@ cdef extern from "engine.h":
                    int avoid_u_turns_, double max_angle, 
                    int oriented_streamlines_,
                    double singularity_mask_radius,
-                   unsigned int random_seed, int parallel_)
+                   unsigned int random_seed, int parallel_, int num_threads)
         void define_seed_region(int seed_region_size, int* seed_region)
         void run()
 
@@ -44,7 +44,8 @@ def run_engine(double[:, ::1] vertices,
                double singularity_mask_radius=0.1,
                int allow_tweaking_orientation=True,
                unsigned int random_seed=0,
-               int parallel=True):
+               int parallel=True,
+               int num_threads=-1):
     cdef:
         int nv = vertices.shape[0]
         int nt = faces.shape[0]
@@ -62,7 +63,7 @@ def run_engine(double[:, ::1] vertices,
     
     engine.setup(radius, max_length, seed_points, avoid_u_turns, max_angle,
                  oriented_streamlines, singularity_mask_radius, random_seed, 
-                 parallel)
+                 parallel, num_threads)
     if seed_region.size:
         engine.define_seed_region(seed_region.size, &seed_region[0])
     if engine.error_code == 1:

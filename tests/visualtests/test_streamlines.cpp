@@ -23,8 +23,8 @@ int main()
     double radius, int max_length, int max_nb_seeds, 
     int avoid_u_turns, double max_angle, 
     double singularity_mask_radius,
-    unsigned int random_seed, int parallel */
-    engine.setup(radius, 1024, 32, 1, 90, 0, 0.1, 129873, 0);
+    unsigned int random_seed, int parallel, int num_threads */
+    engine.setup(radius, 1024, 32, 1, 90, 0, 0.1, 129873, 0, -1);
     //int rgn[] = {50, 100, 130};
     //engine.define_seed_region(3, rgn);
     engine.run();

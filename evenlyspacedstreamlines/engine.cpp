@@ -87,20 +87,26 @@ void StreamlineEngine::setup(double radius_, int max_length, int max_nb_seeds_,
                              int avoid_u_turns_, double max_angle, 
                              int oriented_streamlines_,
                              double singularity_mask_radius,
-                             unsigned int random_seed, int parallel_)
+                             unsigned int random_seed, 
+                             int parallel_, int num_threads)
 {
     TIMING_ON(31); TIMING_ON(0);
     radius = radius_;
     max_nb_seeds = max_nb_seeds_;
     avoid_u_turns = avoid_u_turns_;
-    parallel = parallel_;
     oriented_streamlines = oriented_streamlines_;
-    // a streamline may pass through every triangle
+
+    parallel = parallel_;
+    max_threads = parallel ? omp_get_max_threads() : 1;
+    if (num_threads > 0) {
+        if (num_threads > max_threads) num_threads = max_threads;
+        omp_set_num_threads(num_threads);
+    }
+    
     int default_max_length = (mesh.nt < MAXLENGTH_MINVAL) ? MAXLENGTH_MINVAL 
                                                            : mesh.nt;
     int streamline_max_length = (max_length > 0) ? max_length 
                                                  : default_max_length; 
-
     if (avoid_u_turns) {
         if (max_angle > 90) max_angle = 90;
     }
@@ -110,7 +116,6 @@ void StreamlineEngine::setup(double radius_, int max_length, int max_nb_seeds_,
     setup_streamline_storage(streamline_max_length);
     setup_random_number_generator(random_seed);
 
-    //int bin_max_size = int(max_base/radius + 2);
     singlecurve.initialize(mesh.nt, mesh.t_nb_extneigh_tri, 
                            mesh.t_extneigh_tri);
     allsegments.initialize(mesh.nt, mesh.t_nb_extneigh_tri, 
@@ -199,7 +204,6 @@ void StreamlineEngine::setup_masking_invalid_orientation()
 //-----------------------------------------------------------------------------
 void StreamlineEngine::setup_streamline_storage(int maxlen)
 {
-    max_threads = parallel ? omp_get_max_threads() : 1;
     int nblock = parallel ? CACHE_LINE * max_threads : 1;
 
     current_streamline = new SegmentDeque* [nblock];
