@@ -21,15 +21,13 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
     """Generate a set of evenly spaced streamlines on a triangulated surface
 
     Args:
-        vertices (nv-by-3 array): x, y, z coordinates of the nv vertices 
-            of type numpy.float64
+        vertices (nv-by-3 float array): x, y, z coordinates of the nv vertices
         faces (nt-by-3 int array): indices of the vertices of the nt triangles
-            of type numpy.int32
-        orient (bt-by-3 array): orientation vector in each triangle
-        radius (float): the distance between streamlines must be larger than 
-            that value; by construction, it is also smaller than 2*radius
+        orient (bt-by-3 float array): orientation vector in each triangle
+        radius (float): the distance between streamlines will be larger than 
+            the radius and smaller than 2*radius
     
-    Optional keywords-only args:
+    Optional keyword-only args:
         seed_points (int): number of seed points tested to generate each 
             streamline; the longest streamline is kept (default: 32)
         seed_region (int array): list of triangle indices among which seed 
@@ -52,7 +50,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
             singularity (e.g. focus or node), prevent streamlines from entering
             a sphere of radius 'singularity_mask_radius' x 'radius' around 
             that singularity (default: 0.1)
-        max_length (int): maximal number of iterations wher tracing
+        max_length (int): maximal number of iterations when tracing
             streamlines; it is needed because of nearly-periodic streamlines
             (default: 0, which means equal to the number of triangles)
         max_angle (float): stop streamline integration if the angle between
@@ -63,17 +61,17 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
             a segment of the streamline and the other segments of the same
             streamline; this automatically sets 'max_angle' to at most 
             90 degrees
-        random_seed (int): initialize the seed for pseudo-random nunmber 
+        random_seed (int): initialize the seed for pseudo-random number 
             generation (default: seed based on time)
-        parallel (bool): if True (default), use multithreading whenever 
+        parallel (bool): if True (default), use multithreading wherever 
             implemented
     
     Returns:
         streamlines (list of n-by-3 matrices): xyz coordinates of each
             of the cables generated
         indices (list of (n-1)-arrays): vectors indicating for each line 
-            segment of the streamlinein in which triangle they lie
-        infos (namedtuple): informations about streamline generation
+            segment of the streamline in which triangle they lie
+        infos (namedtuple): information about streamline generation
             'lengths' (n-array): length of each streamline;
             'min_altitude' (float): minimum altitude over all triangles;
             'max_base' (float): maximum length of the base edge over all 
@@ -141,7 +139,8 @@ def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces,
 
     Args:
         surf_vertices (nv-by-3 array): vertices of the triangulated surface
-        surf_triangles (nt-by-3 int array): triangulation of the surface
+        surf_triangles (nt-by-3 int array): triangulation of the surface (must 
+            have consistent orientation)
         lines, faces (lists): output of evenly_spaced_streamlines
         radius (float): radius of each tube
         nb_points (int): number of points around the section of a tube
@@ -150,8 +149,8 @@ def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces,
             the extremities of the curves (default: None)
     
     Returns:
-        vertices (array), triangles (int array): triangulated surface combining 
-        all the tubes
+        vertices (float array), triangles (int array): triangulated surface 
+        combining all the tubes
     """
     # vector normal to the surface
     P = surf_vertices[surf_triangles[:, 0], :]
