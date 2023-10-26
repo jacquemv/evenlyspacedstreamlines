@@ -1,6 +1,5 @@
 #cython: language_level=3
 import numpy as np
-from collections import namedtuple
 
 #-----------------------------------------------------------------------------
 cdef extern from "engine.h":
@@ -29,10 +28,6 @@ cdef extern from "engine.h":
         int euler_characteristic
         double neighborhood_mean_size
         unsigned int saved_random_seed
-
-StreamlinesInfos = namedtuple('StreamlinesInfos', ['lengths', 'min_altitude', 
-                              'max_base', 'neighborhood_size', 
-                              'euler_characteristic', 'random_seed'])
 
 #-----------------------------------------------------------------------------
 def run_engine(double[:, ::1] vertices, 
@@ -101,7 +96,7 @@ def run_engine(double[:, ::1] vertices,
     if ns > 0:
         engine.get_lengths(&lengths_memview[0])
 
-    infos = StreamlinesInfos(
+    infos = dict(
                 lengths=lengths, 
                 min_altitude=float(engine.min_altitude),
                 max_base=float(engine.max_base),

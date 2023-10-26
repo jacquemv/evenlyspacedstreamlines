@@ -1,7 +1,12 @@
+from collections import namedtuple
 import numpy as np
 from .runengine import run_engine
 
 __all__ = ['evenly_spaced_streamlines', 'streamlines_to_tubes']
+
+StreamlinesInfos = namedtuple('StreamlinesInfos', ['lengths', 'min_altitude', 
+                              'max_base', 'neighborhood_size', 
+                              'euler_characteristic', 'random_seed'])
 
 #-----------------------------------------------------------------------------
 def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
@@ -69,13 +74,14 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
         indices (list of (n-1)-arrays): vectors indicating for each line 
             segment of the streamlinein in which triangle they lie
         infos (namedtuple): informations about streamline generation
-            'lengths': length of each streamline;
-            'min_altitude': minimum altitude over all triangles;
-            'max_base': maximum length of the base edge over all triangles;
-            'neighborhood_size': average number of triangles at a distance
-                < 'radius' from any triangle
-            'euler_characteristic': = #vertices - #edges + #triangles
-            'random_seed': random seed used for random number generation
+            'lengths' (n-array): length of each streamline;
+            'min_altitude' (float): minimum altitude over all triangles;
+            'max_base' (float): maximum length of the base edge over all 
+                triangles;
+            'neighborhood_size' (float): average number of triangles at 
+                a distance < 'radius' from any triangle
+            'euler_characteristic' (int): = #vertices - #edges + #triangles
+            'random_seed' (int): random seed used for random number generation
     """
     
     # ensure correct data types
@@ -111,7 +117,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
         seed_region = np.ascontiguousarray(seed_region, dtype=np.int32)
 
     # call C extension
-    return run_engine(
+    list_of_lines, list_of_indices, infos = run_engine(
         vertices, faces, orient, radius, 
         seed_region=seed_region,
         orthogonal=orthogonal,
@@ -125,6 +131,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
         random_seed=random_seed, 
         parallel=parallel
     )
+    return list_of_lines, list_of_indices, StreamlinesInfos(**infos)
 
 #-------------------------------------------------------------------------------
 def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces, 
