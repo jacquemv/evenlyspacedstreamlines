@@ -135,7 +135,7 @@ void StreamlineEngine::define_seed_region(int seed_region_size,
 void StreamlineEngine::setup_geometry(double max_angle)
 {
     mesh.compute_neighborhood(radius, parallel);
-    double cos_limit_angle = cos(max_angle*M_PI/180.0);
+    double cos_limit_angle = cos(max_angle*0.017453292519943295); // pi/180
 
     tracer.initialize(mesh.nt);
     tracer.set_region(0, NULL);
@@ -220,7 +220,7 @@ void StreamlineEngine::setup_streamline_storage(int maxlen)
 void StreamlineEngine::setup_random_number_generator(int random_seed)
 {
     if (random_seed == 0)
-        saved_random_seed = time(NULL);
+        saved_random_seed = (unsigned int) time(NULL);
     else
         saved_random_seed = random_seed;
     srand(saved_random_seed);
@@ -695,7 +695,7 @@ void StreamlineEngine::store_streamline(SegmentDeque* queue,
 //-----------------------------------------------------------------------------
 int StreamlineEngine::get_nb_streamlines()
 {
-    return collection.size();
+    return (int) collection.size();
 }
 
 //-----------------------------------------------------------------------------

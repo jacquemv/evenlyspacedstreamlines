@@ -2,7 +2,7 @@ from collections import namedtuple
 import numpy as np
 from .runengine import run_engine
 
-__all__ = ['evenly_spaced_streamlines', 'streamlines_to_tubes']
+__all__ = ['evenly_spaced_streamlines', 'streamlines_to_tubes', 'test']
 
 StreamlinesInfos = namedtuple('StreamlinesInfos', ['lengths', 'min_altitude', 
                               'max_base', 'neighborhood_size', 
@@ -218,3 +218,15 @@ def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces,
     shift = np.cumsum([0] + [v.shape[0] for v in all_ver])
     tri = np.vstack([t+shift[i] for i, t in enumerate(all_tri)])
     return ver, tri
+
+#-------------------------------------------------------------------------------
+def test():
+    """Run a simple example to check if the compiled code can be called.
+    It should generate around 13 streamlines.
+    """
+    ver = [[0, 0, 0], [1, 0, 0], [0, 1, 0]]
+    tri = [[0, 1, 2]]
+    orient = [[1, 1, 0]]
+    radius = 0.1
+    lines = evenly_spaced_streamlines(ver, tri, orient, radius)[0]
+    print(f'{len(lines)} streamlines generated.')

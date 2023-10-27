@@ -59,7 +59,7 @@ int SegmentSearch::insert(double* P, double* Q, int bin_idx)
     SegmentNode item = {next_id, {P[0], P[1], P[2]}, {Q[0], Q[1], Q[2]}};
     bin[bin_idx].push_back(item);
     next_id++;
-    return bin[bin_idx].size();
+    return (int) bin[bin_idx].size();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ bool SegmentSearch::is_too_close(double* P, double* Q, int bin_idx,
 
     // check if the segments in the sphere are connected
     int* rank = selection.data();
-    int size = selection.size();
+    int size = (int) selection.size();
     insertion_sort(rank, size);
     for (int j=1;j<=size;j++)
         if (rank[size-j] != next_id-j)
@@ -125,7 +125,7 @@ bool SegmentSearch::is_too_close(double* P, double* Q, int bin_idx,
 //-----------------------------------------------------------------------------
 bool SegmentSearch::too_close_within_a_bin(int idx, double radius)
 {
-    int n = bin[idx].size();
+    int n = (int) bin[idx].size();
     SegmentNode* last = &bin[idx][n-1];
     for (int i=0;i<n-1;i++) {
         SegmentNode* s = &bin[idx][i];

@@ -1,3 +1,4 @@
+import platform
 from setuptools import setup, Extension
 from Cython.Distutils import build_ext
 
@@ -7,20 +8,24 @@ DESCR = "Generate evenly-spaced streamlines from an orientation field on a trian
 KEYWORDS = "vector,field,visualization,surface,streamline"
 URL = "http://github.com/jacquemv/evenlyspacedstreamlines"
 REQUIRES = ['numpy', 'cython']
-
 AUTHOR = "Vincent Jacquemet"
 EMAIL = "vincent.jacquemet@umontreal.ca"
-
 LICENSE = "MIT"
-
 SRC_DIR = "evenlyspacedstreamlines"
 PACKAGES = [SRC_DIR]
 
+if platform.system() == 'Windows':
+    compiler_args = ['/openmp', '/O2']
+    linker_args = []
+else:
+    compiler_args = ['-fopenmp', '-Ofast']
+    linker_args = ['-fopenmp']
+    
 ext = Extension(SRC_DIR + ".runengine",
                 sources=[SRC_DIR + "/engine.cpp", SRC_DIR + "/runengine.pyx"],
                 libraries=[],
-                extra_compile_args=['-Ofast', '-fopenmp'],
-                extra_link_args=['-fopenmp'],
+                extra_compile_args=compiler_args,
+                extra_link_args=linker_args,
                 language="c++",
                 include_dirs=[SRC_DIR])
 ext.cython_directives = {'language_level': "3"}
