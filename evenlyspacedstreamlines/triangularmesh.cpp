@@ -646,7 +646,7 @@ int TriangularMesh::calculate_euler_characteristic()
     for (int i=0;i<nt;i++)
         count[t_nb_adjacent_tri[i]]++;
     
-    int ne = (5*count[1]+4*count[2]+3*count[3])/2;
+    int ne = (6*count[0]+5*count[1]+4*count[2]+3*count[3])/2;
     int chi = nv - ne + nt;
     return chi;
 }
