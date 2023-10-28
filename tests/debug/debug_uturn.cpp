@@ -21,12 +21,12 @@ int main()
     int avoid_u_turns, double max_angle, 
     int oriented_streamlines,
     double singularity_mask_radius,
-    unsigned int random_seed, int parallel */
+    unsigned int random_seed, int parallel, int num_threads */
     engine.setup(radius, 0, 32, 
                  1, 90, 
                  0, 
                  -0.1, 
-                 1656514220UL, 0);
+                 1656514220UL, 0, -1);
 
     char fname[] = "output/mask";
     engine.mask_filename = fname;
