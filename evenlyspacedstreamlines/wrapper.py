@@ -9,7 +9,7 @@ StreamlinesInfos = namedtuple('StreamlinesInfos', ['lengths', 'min_altitude',
                               'euler_characteristic', 'random_seed'])
 
 #-----------------------------------------------------------------------------
-def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
+def evenly_spaced_streamlines(vertices, triangles, orientation, radius, *,
                               orthogonal=False, 
                               oriented_streamlines=False,
                               seed_points=32, seed_region=None,
@@ -22,8 +22,9 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
 
     Args:
         vertices (nv-by-3 float array): x, y, z coordinates of the nv vertices
-        faces (nt-by-3 int array): indices of the vertices of the nt triangles
-        orient (bt-by-3 float array): orientation vector in each triangle
+        triangles (nt-by-3 int array): indices of the vertices of the nt 
+            triangles
+        orientation (nt-by-3 float array): orientation vector in each triangle
         radius (float): the distance between streamlines will be larger than 
             the radius and smaller than 2*radius
     
@@ -32,7 +33,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
             streamline; the longest streamline is kept (default: 32)
         seed_region (int array): list of triangle indices among which seed 
             points are picked (default: None, which means that all triangles
-            are considered
+            are considered)
         orthogonal (bool): if True, rotate the orientation by 90 degrees
             (default: False)
         oriented_streamlines (bool): if True, streamlines only follow the 
@@ -60,9 +61,9 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
             lateral (perpendicular) distance of at least 'radius' between
             a segment of the streamline and the other segments of the same
             streamline; this automatically sets 'max_angle' to at most 
-            90 degrees
+            90 degrees (default: True)
         random_seed (int): initialize the seed for pseudo-random number 
-            generation (default: seed based on time)
+            generation (default: seed based on clock)
         parallel (bool): if True (default), use multithreading wherever 
             implemented
         num_threads (int): if possible, use that number of threads for parallel
@@ -70,9 +71,9 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
     
     Returns:
         streamlines (list of n-by-3 matrices): xyz coordinates of each
-            of the cables generated
-        indices (list of (n-1)-arrays): vectors indicating for each line 
-            segment of the streamline in which triangle they lie
+            of the streamlines generated
+        indices (list of (n-1)-arrays): vectors of indices indicating for each
+            line segment of the streamline in which triangle they lie
         infos (namedtuple): information about streamline generation
             'lengths' (n-array): length of each streamline;
             'min_altitude' (float): minimum altitude over all triangles;
@@ -86,27 +87,29 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
     
     # ensure correct data types
     vertices = np.ascontiguousarray(vertices, dtype=np.float64)
-    faces = np.ascontiguousarray(faces, dtype=np.int32)
-    orient = np.ascontiguousarray(orient, dtype=np.float64)
+    triangles = np.ascontiguousarray(triangles, dtype=np.int32)
+    orientation = np.ascontiguousarray(orientation, dtype=np.float64)
 
     # for 2D meshes
     if vertices.shape[1] == 2:
         vertices = np.column_stack((vertices, np.zeros(vertices.shape[0])))
-    if orient.shape[1] == 2:
-        orient = np.column_stack((orient, np.zeros(orient.shape[0])))
+    if orientation.shape[1] == 2:
+        orientation = np.column_stack((orientation, 
+                                       np.zeros(orientation.shape[0])))
 
     # check number of columns
-    if vertices.shape[1] != 3 or faces.shape[1] != 3 or orient.shape[1] != 3:
+    if vertices.shape[1] != 3 or triangles.shape[1] != 3 \
+                              or orientation.shape[1] != 3:
         raise ValueError("Arguments 'vertices', 'faces' and 'orient' "
                          "must all have 3 columns.")
 
     # check array sizes
-    if orient.shape[0] != faces.shape[0]:
-        raise ValueError("Arguments 'faces' and 'orient' must have "
+    if orientation.shape[0] != triangles.shape[0]:
+        raise ValueError("Arguments 'triangles' and 'orient' must have "
                          "the same number of rows.")
     
     # check bounds
-    if faces.min() < 0 or faces.max() >= vertices.shape[0]:
+    if triangles.min() < 0 or triangles.max() >= vertices.shape[0]:
         raise ValueError("Vertex indices out of bounds "
                          f"(must be between 0 and {vertices.shape[0]-1})")
     
@@ -118,7 +121,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
 
     # call C extension
     list_of_lines, list_of_indices, infos = run_engine(
-        vertices, faces, orient, radius, 
+        vertices, triangles, orientation, radius, 
         seed_region=seed_region,
         orthogonal=orthogonal,
         oriented_streamlines=oriented_streamlines,
@@ -135,7 +138,7 @@ def evenly_spaced_streamlines(vertices, faces, orient, radius, *,
     return list_of_lines, list_of_indices, StreamlinesInfos(**infos)
 
 #-------------------------------------------------------------------------------
-def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces, 
+def streamlines_to_tubes(surf_vertices, surf_triangles, lines, triangles, 
                          radius=0.01, nb_points=5, tapering=None):
     """Create a triangulated surface representing a set of tubes following
     the streamlines
@@ -144,7 +147,7 @@ def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces,
         surf_vertices (nv-by-3 array): vertices of the triangulated surface
         surf_triangles (nt-by-3 int array): triangulation of the surface (must 
             have consistent orientation)
-        lines, faces (lists): output of evenly_spaced_streamlines
+        lines, triangles (lists): output of evenly_spaced_streamlines
         radius (float): radius of each tube
         nb_points (int): number of points around the section of a tube
             (default: 5)
@@ -167,7 +170,7 @@ def streamlines_to_tubes(surf_vertices, surf_triangles, lines, faces,
     x, y = np.cos(ang), np.sin(ang)
 
     all_ver, all_tri = [], []
-    for line, face in zip(lines, faces):
+    for line, face in zip(lines, triangles):
         
         # normal to the surface along the streamline
         normal = surf_normals[face]
