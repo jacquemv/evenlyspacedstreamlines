@@ -1,11 +1,11 @@
 
-![Illustration of streamlines](illustration.png)
+![Illustration of streamlines](https://github.com/jacquemv/evenlyspacedstreamlines/blob/main/illustration.png?raw=true)
 
 ### Objective
 
 The objective is to generate a set of evenly-spaced streamlines tangent to a given vector field (or orientation field) on a smooth triangulated surface. The vector field is assumed to be constant over each triangle. A streamline is defined here as a polygonal line on the triangulated surface such that each segment of that polygonal line lies on a triangle and is parallel to the vector associated with that triangle. The algorithm distributes streamlines over the surface in such a way that the minimal distance between streamlines never becomes smaller than a given radius $r$. The approach is inspired by Jobard and Lefer [3].
 
-The structure of the algorithm, its performance and its limitations are discussed in our papers [1, 2], with application to the visualization of fiber orientation in the left atrium of the human heart.
+The structure of the algorithm, its performance and its limitations are discussed in our papers [1, 2], with applications to the visualization of fiber orientation in the human atria.
 
 ### Minimal example
 
@@ -111,6 +111,10 @@ from evenlyspacedstreamlines import test; test()
 ```
 Tested using Anaconda 2023.09 (python 3.11) on Linux and Windows.
 
+### Acknowledgements
+
+This work was supported by the Natural Sciences and Engineering Research
+Council of Canada (NSERC grant RGPIN-2020-05252).
 
 ### References
 
