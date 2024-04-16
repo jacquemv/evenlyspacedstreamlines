@@ -65,7 +65,7 @@ The arguments **vertices** and **triangles** define the triangulated surface, an
 - **oriented_streamlines** (bool): if True, streamlines only follow the vector field in the direction it points to (and not the opposite direction); the outputted streamlines are then oriented according to the vector field. If False (default), the orientation field is defined modulo pi instead of 2pi
 - **allow_tweaking_orientation** (bool): if an orientation vector is parallel to an edge of the triangle, a small random perturbation is applied to that vector to satisfy the requirement (default: True); otherwise an exception is raised when the requirement is not satisfied
 - **singularity_mask_radius** (float): when the orientation field has a singularity (e.g. focus or node), prevent streamlines from entering a sphere of radius 'singularity_mask_radius' x 'radius' around that singularity (default: 0.1)
-- **max_length** (int): maximal number of iterations when tracing streamlines; it is needed because of nearly-periodic streamlines (default: 0, which means equal to the number of triangles)
+- **max_length** (int): maximal number of iterations when tracing streamlines; it is needed because of nearly-periodic streamlines (default: 0, which means equal to the number of triangles, but at least 256)
 - **max_angle** (float): stop streamline integration if the angle between two consecutive segments is larger than max_angle in degrees; 0 means straight line and 180 means U-turn (default: 90)
 - **avoid_u_turns** (bool): restrict high curvatures by maintaining a lateral (perpendicular) distance of at least 'radius' between a segment of the streamline and the other segments of the same streamline; this automatically sets 'max_angle' to at most 90 degrees (default: True)
 - **random_seed** (int): initialize the seed for pseudo-random number generation (default: seed based on clock)
@@ -118,8 +118,8 @@ Council of Canada (NSERC grant RGPIN-2020-05252).
 
 ### References
 
-1. V. Jacquemet. Improved algorithm for generating evenly-spaced streamlines on a triangulated surface (*in preparation*), 2023.
+1. V. Jacquemet. Improved algorithm for generating evenly-spaced streamlines on a triangulated surface (submitted to *Computer Methods and Programs in Biomedicine*), 2024.
 
-2. A. Saliani, A. Tsikhanovich, V. Jacquemet. [Visualization of interpolated atrial fiber orientation using evenly-spaced streamlines](https://doi.org/10.1016/j.compbiomed.2019.103349), *Comput. Biol. Med.* 2019, vol. 11, pp. 103349. 
+2. A. Saliani, A. Tsikhanovich, V. Jacquemet. [Visualization of interpolated atrial fiber orientation using evenly-spaced streamlines](https://doi.org/10.1016/j.compbiomed.2019.103349), *Comput. Biol. Med.* 2019, vol. 11, pp. 103349. [[Open access link]](https://hdl.handle.net/1866/32892)
 
-3. B. Jobard, W. Lefer. [Creating evenly-spaced streamlines of arbitrary density](https://link.springer.com/chapter/10.1007/978-3-7091-6876-9_5). In Visualization in Scientific Computing’97, pp. 43–55. Springer, 1997.
+3. B. Jobard, W. Lefer. [Creating evenly-spaced streamlines of arbitrary density](https://link.springer.com/chapter/10.1007/978-3-7091-6876-9_5). In Visualization in Scientific Computing’97, pp. 43–55. Springer, 1997. [[Open access link]](https://www.researchgate.net/publication/2825680_Creating_Evenly-Spaced_Streamlines_of_Arbitrary_Density)
