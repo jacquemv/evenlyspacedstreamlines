@@ -3,7 +3,7 @@ from setuptools import setup, Extension
 from Cython.Distutils import build_ext
 
 NAME = "evenlyspacedstreamlines"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 DESCR = "Generate evenly-spaced streamlines from an orientation field on a triangulated 3D surface"
 KEYWORDS = "vector,field,visualization,surface,streamline"
 URL = "http://github.com/jacquemv/evenlyspacedstreamlines"
