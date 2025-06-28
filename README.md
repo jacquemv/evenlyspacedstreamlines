@@ -113,12 +113,11 @@ Tested using Anaconda 2023.09 (python 3.11) on Linux and Windows.
 
 ### Acknowledgements
 
-This work was supported by the Natural Sciences and Engineering Research
-Council of Canada (NSERC grant RGPIN-2020-05252).
+This work was supported by the Natural Sciences and Engineering ResearchCouncil of Canada (NSERC grant RGPIN-2020-05252).
 
 ### References
 
-1. V. Jacquemet. Improved algorithm for generating evenly-spaced streamlines on a triangulated surface (submitted to *Computer Methods and Programs in Biomedicine*), 2024.
+1. V. Jacquemet. [Improved algorithm for generating evenly-spaced streamlines on a triangulated surface](https://www.sciencedirect.com/science/article/pii/S0169260724001986),  *Comput. Methods Programs Biomed.* 2024. vol 251, pp. 108202. [[Open access link]](https://www.sciencedirect.com/science/article/pii/S0169260724001986)
 
 2. A. Saliani, A. Tsikhanovich, V. Jacquemet. [Visualization of interpolated atrial fiber orientation using evenly-spaced streamlines](https://doi.org/10.1016/j.compbiomed.2019.103349), *Comput. Biol. Med.* 2019, vol. 11, pp. 103349. [[Open access link]](https://hdl.handle.net/1866/32892)
 
